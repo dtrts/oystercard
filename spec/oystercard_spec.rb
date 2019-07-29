@@ -74,18 +74,30 @@ describe 'Oystercard' do
 
   describe '.touch_out' do
     it 'sets in_journey to false' do
-      subject.touch_out
+      subject.touch_out(:station)
       expect(subject).not_to be_in_journey
     end
 
     it 'deducts from balance' do
       subject.top_up(20)
-      expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::FARE)
+      expect { subject.touch_out(:station) }.to change { subject.balance }.by(-Oystercard::FARE)
     end
 
     it 'sets entry_station to nil on touch out' do
-      cash_rich_rider.touch_out
-      expect(subject.entry_station).to eq(nil)
+      cash_rich_rider.touch_out(:station)
+      expect(cash_rich_rider.entry_station).to eq(nil)
+    end
+
+    it 'adds a journey' do
+      cash_rich_rider.touch_out(:station)
+      expect(cash_rich_rider.journeys.count).to eq(1)
+    end
+  end
+
+  describe 'journeys' do
+    it 'prints out and array of hashes' do
+      cash_rich_rider.touch_out(:station)
+      expect(cash_rich_rider.journeys).to eq([{ entry_station: :station, exit_station: :station }])
     end
   end
 end
