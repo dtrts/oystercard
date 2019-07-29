@@ -1,9 +1,10 @@
-require_relative "../lib/card.rb"
-require_relative "../lib/station.rb"
+require_relative '../lib/card.rb'
+require_relative '../lib/station.rb'
 # Feature Test
 
 # Making a a card
-my_card = Card.new(max_balance = 100)
+my_card = Oystercard.new
+my_card.add(100)
 
 # Making Stations
 hampstead = Station.new(2)

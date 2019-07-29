@@ -4,10 +4,15 @@
 
 ***I write code that is easy to change***
 
+Writing easy to change software is highly prized amongst developers and employers. By developers because most of a developer's time is spent changing software. By employers because their teams can deliver value to customers faster.
+
 ***I can test-drive my code***
+
+Tested software is easier to change because you can tell when it's broken just by running a command, even the tricky edge cases.
 
 ***I can build with objects***
 
+Most code in the world is structured in small pieces called objects. This is done because it is easier to change than having everything in one place.
 
 
 ---
@@ -82,7 +87,7 @@ I need to have the correct fare calculated
 
 
 Objects:
-- Card
+- Oystercard
   - `.new(balance = 0)` : set balance ?? don't need this.
   - `.add(amount)` : Will fail if balance over card.max_balance
   - `@max_balance` : Instance variable which limits the amount of money on the card
