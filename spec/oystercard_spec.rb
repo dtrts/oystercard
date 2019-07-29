@@ -6,6 +6,7 @@ describe 'Oystercard' do
 
   describe '.top_up' do
     before(:each) { subject = Oystercard.new(0) }
+
     it 'adds value to balance' do
       top_up_amount = rand(1..50)
       expect { subject.top_up(top_up_amount) }.to change { subject.balance }.by top_up_amount
@@ -26,7 +27,6 @@ describe 'Oystercard' do
     before(:each) { subject = Oystercard.new(50) }
     it 'deducts a small value' do
       deduct_value = rand(1..49)
-      pre_balance = subject.balance
       expect { subject.deduct(deduct_value) }.to change { subject.balance }.by -deduct_value
     end
   end
@@ -44,6 +44,30 @@ describe 'Oystercard' do
 
     it 'holds 100 balance' do
       expect(subject.balance).to eq(test_balance)
+    end
+  end
+
+  it 'will not be initialized with balance over maximum' do
+    expect { Oystercard.new(Oystercard::MAXIMUM_BALANCE + rand(1..100)) }.to raise_error Oystercard::ERR_BALANCE_LIMIT
+  end
+
+  describe '.in_journey?' do
+    it 'has a default of not travelling' do
+      expect(subject.in_journey?).to eq(false)
+    end
+  end
+
+  describe '.touch_in' do
+    it 'sets in_journey to true' do
+      subject.touch_in
+      expect(subject.in_journey?).to eq(true)
+    end
+  end
+
+  describe '.touch_out' do
+    it 'sets in_journey to false' do
+      subject.touch_in
+      expect(subject.in_journey?).to eq(false)
     end
   end
 end
