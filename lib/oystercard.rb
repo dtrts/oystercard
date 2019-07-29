@@ -10,7 +10,6 @@ class Oystercard
     raise ERR_BALANCE_LIMIT if balance > MAXIMUM_BALANCE
 
     @balance = balance
-    @in_journey = false
   end
 
   def top_up(amount)
@@ -20,18 +19,16 @@ class Oystercard
   end
 
   def in_journey?
-    @in_journey
+    !!entry_station
   end
 
   def touch_in(entry_station)
     raise ERR_TOUCH_IN_NO_FUNDS if balance < MINIMUM_BALANCE
 
     @entry_station = entry_station
-    @in_journey = true
   end
 
   def touch_out
-    @in_journey = false
     @entry_station = nil
     deduct(FARE)
   end

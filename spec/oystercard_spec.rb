@@ -55,6 +55,10 @@ describe 'Oystercard' do
   end
 
   describe '.touch_in' do
+    it 'has entry_Station nil as default' do
+      expect(subject.entry_station).to eq(nil)
+    end
+
     it 'sets in_journey to true' do
       expect(cash_rich_rider).to be_in_journey
     end
