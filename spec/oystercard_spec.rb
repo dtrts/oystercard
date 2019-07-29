@@ -51,14 +51,20 @@ describe 'Oystercard' do
   end
 
   describe '.touch_in' do
+    let(:station) { double }
     it 'sets in_journey to true' do
       subject.top_up(Oystercard::MINIMUM_BALANCE + 1)
-      subject.touch_in
+      subject.touch_in(:station)
       expect(subject).to be_in_journey
     end
 
     it 'raises error if less than minimum balance' do
-      expect { subject.touch_in }.to raise_error Oystercard::ERR_TOUCH_IN_NO_FUNDS
+      expect { subject.touch_in(:station) }.to raise_error Oystercard::ERR_TOUCH_IN_NO_FUNDS
+    end
+
+    it 'stores entry station' do
+      subject.touch_in(:station)
+      expect(subject.entry_station).to eq(:station)
     end
   end
 
@@ -71,6 +77,13 @@ describe 'Oystercard' do
     it 'deducts from balance' do
       subject.top_up(20)
       expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::FARE)
+    end
+
+    it 'sets entry_station to nil on touch out' do
+      subject.top_up(20)
+      subject.touch_in(:station)
+      subject.touch_out
+      expect(subject.entry_station).to eq(nil)
     end
   end
 end
