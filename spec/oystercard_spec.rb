@@ -23,14 +23,6 @@ describe 'Oystercard' do
     end
   end
 
-  describe '.deduct(amount)' do
-    before(:each) { subject = Oystercard.new(50) }
-    it 'deducts a small value' do
-      deduct_value = rand(1..49)
-      expect { subject.deduct(deduct_value) }.to change { subject.balance }.by -deduct_value
-    end
-  end
-
   context 'with 0 starting balance' do
     subject { Oystercard.new }
     it 'begins with a 0 balance' do
@@ -73,6 +65,11 @@ describe 'Oystercard' do
     it 'sets in_journey to false' do
       subject.touch_out
       expect(subject).not_to be_in_journey
+    end
+
+    it 'deducts from balance' do
+      subject.top_up(20)
+      expect { subject.touch_out }.to change { subject.balance }.by(Oystercard::FARE)
     end
   end
 end
