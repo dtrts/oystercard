@@ -1,7 +1,7 @@
 class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
-
+  FARE = 2
   ERR_BALANCE_LIMIT = 'Failed to change card as balance would pass the limit of #{MAXIMUM_BALANCE}.'.freeze
   ERR_TOUCH_IN_NO_FUNDS = 'Failed to start journey as there''s insufficient funds (less than #{MINIMUM_BALANCE}) on your card.'.freeze
   attr_reader :balance
@@ -19,10 +19,6 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def in_journey?
     @in_journey
   end
@@ -35,5 +31,12 @@ class Oystercard
 
   def touch_out
     @in_journey = false
+    deduct(FARE)
+  end
+
+  private
+
+  def deduct(amount)
+    @balance -= amount
   end
 end

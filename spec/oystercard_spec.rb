@@ -3,6 +3,7 @@ require 'oystercard'
 describe 'Oystercard' do
   subject { Oystercard.new }
   it { is_expected.to respond_to(:balance) }
+  it { is_expected.not_to respond_to(:deduct) }
 
   describe '.top_up' do
     before(:each) { subject = Oystercard.new(0) }
@@ -69,7 +70,7 @@ describe 'Oystercard' do
 
     it 'deducts from balance' do
       subject.top_up(20)
-      expect { subject.touch_out }.to change { subject.balance }.by(Oystercard::FARE)
+      expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::FARE)
     end
   end
 end
