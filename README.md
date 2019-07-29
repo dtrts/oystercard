@@ -89,7 +89,7 @@ I need to have the correct fare calculated
 Objects:
 - Oystercard
   - `.new(balance = 0)` : set balance ?? don't need this.
-  - `.add(amount)` : Will fail if balance over card.max_balance
+  - `.top_up(amount)` : Will fail if balance over card.max_balance
   - `@max_balance` : Instance variable which limits the amount of money on the card
   - `.balance` : Shows user `@balance` value.
   - `.deduct(amount)`
