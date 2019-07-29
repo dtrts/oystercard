@@ -5,6 +5,10 @@ describe 'Oystercard' do
   it { is_expected.to respond_to(:balance) }
   it { is_expected.not_to respond_to(:deduct) }
 
+  let(:station) { double }
+  let(:cash_rich_rider) { Oystercard.new(90) }
+  before(:each) { cash_rich_rider.touch_in(:station) }
+
   describe '.top_up' do
     before(:each) { subject = Oystercard.new(0) }
 
@@ -51,11 +55,8 @@ describe 'Oystercard' do
   end
 
   describe '.touch_in' do
-    let(:station) { double }
     it 'sets in_journey to true' do
-      subject.top_up(Oystercard::MINIMUM_BALANCE + 1)
-      subject.touch_in(:station)
-      expect(subject).to be_in_journey
+      expect(cash_rich_rider).to be_in_journey
     end
 
     it 'raises error if less than minimum balance' do
@@ -63,8 +64,7 @@ describe 'Oystercard' do
     end
 
     it 'stores entry station' do
-      subject.touch_in(:station)
-      expect(subject.entry_station).to eq(:station)
+      expect(cash_rich_rider.entry_station).to eq(:station)
     end
   end
 
@@ -80,9 +80,7 @@ describe 'Oystercard' do
     end
 
     it 'sets entry_station to nil on touch out' do
-      subject.top_up(20)
-      subject.touch_in(:station)
-      subject.touch_out
+      cash_rich_rider.touch_out
       expect(subject.entry_station).to eq(nil)
     end
   end
