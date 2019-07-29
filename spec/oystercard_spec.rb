@@ -8,8 +8,7 @@ describe 'Oystercard' do
     before(:each) { subject = Oystercard.new(0) }
     it 'adds value to balance' do
       top_up_amount = rand(1..50)
-      subject.top_up(top_up_amount)
-      expect(subject.balance).to eq(top_up_amount)
+      expect { subject.top_up(top_up_amount) }.to change { subject.balance }.by top_up_amount
     end
 
     it 'refuses to exceed balance limit' do
@@ -19,7 +18,7 @@ describe 'Oystercard' do
 
     it 'tops up to limit' do
       top_up_amount = Oystercard::MAXIMUM_BALANCE
-      expect(subject.top_up(top_up_amount)).to eq(top_up_amount)
+      expect { subject.top_up(top_up_amount) }.to change { subject.balance }.by top_up_amount
     end
   end
 
@@ -28,8 +27,7 @@ describe 'Oystercard' do
     it 'deducts a small value' do
       deduct_value = rand(1..49)
       pre_balance = subject.balance
-      expect(subject.deduct(deduct_value)).to eq(deduct_value)
-      expect(subject.balance).to eq(pre_balance - deduct_value)
+      expect { subject.deduct(deduct_value) }.to change { subject.balance }.by -deduct_value
     end
   end
 
