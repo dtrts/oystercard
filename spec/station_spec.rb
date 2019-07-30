@@ -1,8 +1,12 @@
 require 'station'
 
-describe 'Station' do
-  subject { Station.new('Old Street', 2) }
+describe Station do
+  subject { described_class.new('Old Street', 2) }
 
-  it { is_expected.to respond_to(:name) }
-  it { is_expected.to respond_to(:zone) }
+  it 'returns da name zone' do
+    expect(subject.name).to eq('Old Street')
+  end
+  it 'returns da zone zone' do
+    expect(subject.zone).to eq(2)
+  end
 end

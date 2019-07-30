@@ -6,10 +6,6 @@ describe 'Oystercard' do
   it { is_expected.to respond_to(:balance) }
   it { is_expected.not_to respond_to(:deduct) }
 
-  let(:station) { double }
-  let(:cash_rich_rider) { Oystercard.new(90) }
-  before(:each) { cash_rich_rider.touch_in(:station) }
-
   describe '.top_up' do
     before(:each) { subject = Oystercard.new(0) }
 
@@ -56,49 +52,61 @@ describe 'Oystercard' do
   end
 
   describe '.touch_in' do
-    it 'has entry_Station nil as default' do
-      expect(subject.entry_station).to eq(nil)
+    let(:station) { double('station') }
+
+    it 'raises error if less than minimum balance' do
+      expect { Oystercard.new.touch_in(:station) }.to raise_error Oystercard::ERR_TOUCH_IN_NO_FUNDS
+    end
+
+    before(:each) { subject.top_up(90) }
+    # before(:each) { cash_rich_rider.touch_in(:station) }
+
+    it 'has journey nil as default' do
+      expect(subject.journey).to eq(nil)
     end
 
     it 'sets in_journey to true' do
-      expect(cash_rich_rider).to be_in_journey
-    end
-
-    it 'raises error if less than minimum balance' do
-      expect { subject.touch_in(:station) }.to raise_error Oystercard::ERR_TOUCH_IN_NO_FUNDS
+      subject.touch_in(station)
+      expect(subject).to be_in_journey
     end
 
     it 'stores entry station' do
-      expect(cash_rich_rider.entry_station).to eq(:station)
+      subject.touch_in(station)
+      expect(subject.journey.entry_station).to eq(station)
     end
   end
 
   describe '.touch_out' do
+    subject { Oystercard.new(90) }
+    before(:each) { subject.touch_in(:station) }
+
     it 'sets in_journey to false' do
       subject.touch_out(:station)
       expect(subject).not_to be_in_journey
     end
 
     it 'deducts from balance' do
-      subject.top_up(20)
-      expect { subject.touch_out(:station) }.to change { subject.balance }.by(-Oystercard::FARE)
+      expect { subject.touch_out(:station) }.to change { subject.balance }.by(-Journey::MINIMUM_FARE)
     end
 
     it 'sets entry_station to nil on touch out' do
-      cash_rich_rider.touch_out(:station)
-      expect(cash_rich_rider.entry_station).to eq(nil)
+      subject.touch_out(:station)
+      expect(subject.journey).to eq(nil)
     end
 
     it 'adds a journey' do
-      cash_rich_rider.touch_out(:station)
-      expect(cash_rich_rider.journeys.count).to eq(1)
+      subject.touch_out(:station)
+      expect(subject.journeys.count).to eq(1)
     end
   end
 
   describe 'journeys' do
     it 'prints out and array of hashes' do
-      cash_rich_rider.touch_out(:station)
-      expect(cash_rich_rider.journeys).to eq([{ entry_station: :station, exit_station: :station }])
+      subject.top_up(90)
+      subject.touch_in(:station)
+      subject.touch_out(:station)
+      expect(subject.journeys[0].entry_station).to eq(:station)
+      expect(subject.journeys[0].exit_station).to eq(:station)
     end
   end
 end
