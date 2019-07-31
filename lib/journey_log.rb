@@ -1,13 +1,21 @@
 class JourneyLog
+  ERR_JOURNEY_IN_PROGRESS = 'Attempting to start a new journey without completing outstanding fares'.freeze
+
+  NO_CHARGE = 0
+
   def initialize(journey_class = Journey)
     @journey_class = journey_class
     @journeys = []
     @current_journey = nil
   end
 
-  NO_CHARGE = 0
+  def current_journey
+    @current_journey.dup
+  end
 
-  attr_accessor :current_journey
+  def journeys
+    @journeys.dup
+  end
 
   def start(entry_station)
     raise ERR_JOURNEY_IN_PROGRESS unless @current_journey.nil?
@@ -19,25 +27,25 @@ class JourneyLog
     # if no current journey have to make one and return a penalty fare
     @current_journey = @journey_class.new(nil) if @current_journey.nil?
     @current_journey.exit_station = exit_station
-    @fare = @current_journey.process_fare
-    @journeys << @current_journey
-    @current_journey = nil
-    @fare
+
+    process_journey
   end
 
   def outstanding_charge
-    # Finish off current journey, mark as complete. Otherwise return zilch.
     if @current_journey
-      @fare = @current_journey.process_fare
-      @journeys << @current_journey
-      @current_journey = nil
-      @fare
+      process_journey
     else
       NO_CHARGE
     end
   end
 
-  def journeys
-    @journeys.dup
+  private
+
+  def process_journey
+    @fare = @current_journey.process_fare
+    @journeys << @current_journey
+    @current_journey = nil
+
+    @fare
   end
 end

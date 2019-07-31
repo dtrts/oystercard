@@ -13,6 +13,10 @@ class Journey
 
   attr_reader :entry_station, :exit_station, :complete, :fare
 
+  def complete?
+    @complete
+  end
+
   def exit_station=(exit_station)
     raise ERR_PROCESSING_COMPLETED_JOURNEY if complete?
     raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
@@ -20,25 +24,20 @@ class Journey
     @exit_station = exit_station
   end
 
-  # allow change of entry station if a new journey is made without one and it needs to be updated
-  # it isn't part of the user stories
-  def entry_station=(entry_station)
-    raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
-
-    @entry_station = entry_station
-  end
-
-  def complete?
-    @complete
-  end
-
+  # Returns the fare and sets as completed.
   def process_fare
     raise ERR_PROCESSING_COMPLETED_JOURNEY if complete?
     raise ERR_EMPTY_JOURNEY if @entry_station.nil? && @exit_station.nil?
 
     @complete = true
-    @fare = MINIMUM_FARE
-    @fare = PENALTY_FARE if @entry_station.nil? || @exit_station.nil?
-    @fare
+    @fare = @entry_station.nil? || @exit_station.nil? ? PENALTY_FARE : MINIMUM_FARE
   end
+
+  # allow change of entry station if a new journey is made without one and it needs to be updated
+  # it isn't part of the user stories
+  # def entry_station=(entry_station)
+  #   raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
+
+  #   @entry_station = entry_station
+  # end
 end
