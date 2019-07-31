@@ -49,4 +49,11 @@ describe 'Journey' do
       expect { subject.process_fare }.to raise_error(Journey::ERR_EMPTY_JOURNEY)
     end
   end
+
+  it 'will accept a calss and store it in journeys' do
+    journey = double('journey type')
+    subject.start(station)
+    subject.finish(station)
+    expect(subject.journey[0]).to eq(journey)
+  end
 end

@@ -4,6 +4,8 @@
 # Card will touch out of a station and spit out a journey and fare
 # Card will deduct that amount.
 
+# Wrote the code first don't be mad.
+
 class Oystercard
   attr_reader :balance, :journey, :journeys
 

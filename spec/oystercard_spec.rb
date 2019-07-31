@@ -49,6 +49,12 @@ describe 'Oystercard' do
     it 'has a default of not travelling' do
       expect(subject).not_to be_in_journey
     end
+
+    it 'is travelling after touching in' do
+      subject.top_up(90)
+      subject.touch_in(:station)
+      expect(subject).to be_in_journey
+    end
   end
 
   describe '.touch_in' do
@@ -70,10 +76,11 @@ describe 'Oystercard' do
       expect(subject).to be_in_journey
     end
 
-    it 'stores entry station' do
-      subject.touch_in(station)
-      expect(subject.journey.entry_station).to eq(station)
-    end
+    # This is now the journey logs responsibility
+    # it 'stores entry station' do
+    #   subject.touch_in(station)
+    #   expect(subject.journey.entry_station).to eq(station)
+    # end
   end
 
   describe '.touch_out' do
@@ -89,24 +96,24 @@ describe 'Oystercard' do
       expect { subject.touch_out(:station) }.to change { subject.balance }.by(-Journey::MINIMUM_FARE)
     end
 
-    it 'sets entry_station to nil on touch out' do
-      subject.touch_out(:station)
-      expect(subject.journey).to eq(nil)
-    end
-
-    it 'adds a journey' do
-      subject.touch_out(:station)
-      expect(subject.journeys.count).to eq(1)
-    end
+    # Doesn't make sense wrt. journey log
+    # it 'sets entry_station to nil on touch out' do
+    #   subject.touch_out(:station)
+    #   expect(subject.journey).to eq(nil)
+    # end
+    #
+    # it 'adds a journey' do
+    #   subject.touch_out(:station)
+    #   expect(subject.journeys.count).to eq(1)
+    # end
   end
 
   describe 'journeys' do
-    it 'prints out and array of hashes' do
+    it 'prints out an array of journeys?' do
       subject.top_up(90)
       subject.touch_in(:station)
       subject.touch_out(:station)
-      expect(subject.journeys[0].entry_station).to eq(:station)
-      expect(subject.journeys[0].exit_station).to eq(:station)
+      expect(subject.journeys).to be_a(Array)
     end
   end
 end
