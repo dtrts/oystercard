@@ -24,6 +24,10 @@ describe JourneyLog do
       end
     end
 
+    describe '#start' do
+      it 'will raise error if at'
+    end
+
     describe '#end' do
       it 'will add a journey' do
         expect { subject.end(station) }.to change { subject.journeys.count }.by 1
