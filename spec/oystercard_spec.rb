@@ -67,10 +67,6 @@ describe 'Oystercard' do
     before(:each) { subject.top_up(90) }
     # before(:each) { cash_rich_rider.touch_in(:station) }
 
-    it 'has journey nil as default' do
-      expect(subject.journey).to eq(nil)
-    end
-
     it 'sets in_journey to true' do
       subject.touch_in(station)
       expect(subject).to be_in_journey
@@ -93,19 +89,10 @@ describe 'Oystercard' do
     end
 
     it 'deducts from balance' do
+      p subject.in_journey?
+
       expect { subject.touch_out(:station) }.to change { subject.balance }.by(-Journey::MINIMUM_FARE)
     end
-
-    # Doesn't make sense wrt. journey log
-    # it 'sets entry_station to nil on touch out' do
-    #   subject.touch_out(:station)
-    #   expect(subject.journey).to eq(nil)
-    # end
-    #
-    # it 'adds a journey' do
-    #   subject.touch_out(:station)
-    #   expect(subject.journeys.count).to eq(1)
-    # end
   end
 
   describe 'journeys' do

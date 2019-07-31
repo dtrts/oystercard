@@ -6,7 +6,7 @@ describe JourneyLog do
   it { expect(subject).to respond_to(:journeys) }
   it 'cannot alter journeys' do
     subject.start(station)
-    subject.finish(station)
+    subject.end(station)
     subject.journeys[0] = 'asd'
     expect(subject.journeys[0]).not_to eq('asd')
   end
@@ -16,16 +16,16 @@ describe JourneyLog do
 
     describe '#outstanding_charge' do
       it 'will return a number (penalty fare' do # the number will be decided by the journey class.
-        expect(subject.outstanding_charge).to be_a(Number)
+        expect(subject.outstanding_charge).to be_a(Numeric)
       end
       it 'will add a journey' do
-        expect { subject.finish(station) }.to change { subject.journeys.count }.by 1
+        expect { subject.end(station) }.to change { subject.journeys.count }.by 1
       end
     end
 
     describe '#finish' do
       it 'will add a journey' do
-        expect { subject.finish(station) }.to change { subject.journeys.count }.by 1
+        expect { subject.end(station) }.to change { subject.journeys.count }.by 1
       end
     end
   end

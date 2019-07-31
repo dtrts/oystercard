@@ -6,12 +6,16 @@ class Journey
   MINIMUM_FARE = 6
   PENALTY_FARE = 9
   # nice
+  def initialize(entry_station = nil)
+    @entry_station = entry_station
+    @complete = false
+  end
 
-  attr_reader :entry_station, :exit_station, :complete
+  attr_reader :entry_station, :exit_station, :complete, :fare
 
   def exit_station=(exit_station)
-    raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
     raise ERR_PROCESSING_COMPLETED_JOURNEY if complete?
+    raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
 
     @exit_station = exit_station
   end
@@ -22,11 +26,6 @@ class Journey
     raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
 
     @entry_station = entry_station
-  end
-
-  def initialize(entry_station = nil)
-    @entry_station = entry_station
-    @complete = false
   end
 
   def complete?
