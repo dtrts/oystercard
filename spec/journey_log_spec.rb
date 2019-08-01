@@ -10,12 +10,16 @@ describe JourneyLog do
   it { expect(subject).to respond_to(:journeys) }
 
   context 'empty log' do
-    it 'has journeys as empty array' do
-      expect(subject.journeys).to be_empty
-      expect(subject.journeys).to be_a(Array)
+    describe '#journeys' do
+      it 'is empty' do
+        expect(subject.journeys).to be_empty
+        expect(subject.journeys).to be_a(Array)
+      end
     end
-    it 'has nil current journey' do
-      expect(subject.current_journey).to eq(nil)
+    describe '#current_journey' do
+      it 'is nil' do
+        expect(subject.current_journey).to eq(nil)
+      end
     end
   end
 
@@ -31,10 +35,6 @@ describe JourneyLog do
     end
 
     describe '#end' do
-      it 'will add a journey' do
-        expect { subject.end(station) }.to change { subject.journeys.count }.by 1
-      end
-
       it 'will add a journey' do
         expect { subject.end(station) }.to change { subject.journeys.count }.by 1
       end

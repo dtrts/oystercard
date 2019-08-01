@@ -32,12 +32,4 @@ class Journey
     @complete = true
     @fare = @entry_station.nil? || @exit_station.nil? ? PENALTY_FARE : MINIMUM_FARE
   end
-
-  # allow change of entry station if a new journey is made without one and it needs to be updated
-  # it isn't part of the user stories
-  # def entry_station=(entry_station)
-  #   raise ERR_CHANGING_JOURNEY unless @exit_station.nil?
-
-  #   @entry_station = entry_station
-  # end
 end
