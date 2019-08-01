@@ -1,7 +1,11 @@
 require 'journey_log'
 
 describe JourneyLog do
-  let(:station) { double }
+  let(:station) { double(:station) }
+  let(:journey) { double(:journey, :exit_station= => station, process_fare: 0) }
+  let(:journey_class) { double(:journey_class, new: journey) }
+
+  subject { JourneyLog.new(journey_class) }
 
   it { expect(subject).to respond_to(:journeys) }
 
@@ -16,16 +20,14 @@ describe JourneyLog do
   end
 
   context 'having started a journey' do
-    before(:each) { subject.start(:station) }
+    before(:each) { subject.start(station) }
 
     describe '#outstanding_charge' do
-      it 'will return a number (penalty fare)' do # the number will be decided by the journey class.
-        expect(subject.outstanding_charge).to be_a(Numeric)
+      it 'will return a number (penalty fare)' do
+        # the number will be decided by the journey class which we have mocked
+        # normally it would be non-zero
+        expect(subject.outstanding_charge).to eq(0)
       end
-    end
-
-    describe '#start' do
-      it 'will raise error if at'
     end
 
     describe '#end' do
@@ -38,21 +40,21 @@ describe JourneyLog do
       end
     end
 
-    let(:station2) { double('station2') }
-    it 'cant alter current journey directly' do
-      subject.current_journey.exit_station = station2
-      expect(subject.current_journey.exit_station).not_to eq(station2)
-    end
-  end
+    context 'and completed the journey' do
+      before(:each) { subject.end(station) }
 
-  context 'having a completed journey in log' do
-    before(:each) { subject.start(:station) }
-    before(:each) { subject.end(:station) }
+      it { expect(subject.journeys.count).to eq(1) }
 
-    it { expect(subject.journeys.count).to eq(1) }
-    it 'cannot alter journeys' do
-      subject.journeys[0] = 'asd'
-      expect(subject.journeys[0]).not_to eq('asd')
+      it 'cannot alter journeys' do
+        subject.journeys[0] = 'asd'
+        expect(subject.journeys[0]).not_to eq('asd')
+      end
+
+      describe '#outstanding_charge' do
+        it 'returns 0' do
+          expect(subject.outstanding_charge).to eq(0)
+        end
+      end
     end
   end
 end

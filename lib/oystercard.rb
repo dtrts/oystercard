@@ -2,8 +2,8 @@ class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
   FARE = 2
-  ERR_BALANCE_LIMIT = 'Failed to change card as balance would pass the limit of #{MAXIMUM_BALANCE}.'.freeze
-  ERR_TOUCH_IN_NO_FUNDS = 'Failed to start journey as there''s insufficient funds (less than #{MINIMUM_BALANCE}) on your card.'.freeze
+  ERR_BALANCE_LIMIT = "Failed to change card as balance would pass the limit of #{MAXIMUM_BALANCE}.".freeze
+  ERR_TOUCH_IN_NO_FUNDS = "Failed to start journey as there''s insufficient funds (less than #{MINIMUM_BALANCE}) on your card.".freeze
 
   attr_reader :balance
   def journeys
@@ -33,6 +33,7 @@ class Oystercard
     deduct(@journey_log.outstanding_charge)
 
     @journey_log.start(entry_station)
+    @balance
   end
 
   def touch_out(exit_station)
@@ -43,23 +44,5 @@ class Oystercard
 
   def deduct(amount)
     @balance -= amount
-  end
-
-  def start_journey(entry_station)
-    process_journey unless @journey.nil?
-
-    @journey = Journey.new(entry_station)
-  end
-
-  def end_journey(exit_station)
-    @journey = Journey.new(nil) if @journey.nil?
-    @journey.exit_station = exit_station
-    process_journey
-  end
-
-  def process_journey
-    deduct(@journey.process_fare)
-    @journeys << @journey
-    @journey = nil
   end
 end

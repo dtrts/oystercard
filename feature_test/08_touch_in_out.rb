@@ -1,5 +1,4 @@
-require_relative "../lib/oystercard.rb"
-
+require_relative '../lib/oystercard.rb'
 
 card = Oystercard.new(50)
 
