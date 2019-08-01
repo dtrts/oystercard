@@ -3,9 +3,9 @@ class Journey
   ERR_EMPTY_JOURNEY = 'Journey has no stations attached'.freeze
   ERR_CHANGING_JOURNEY = 'Unable to change journey details if exit station if already set'.freeze
 
-  MINIMUM_FARE = 6
-  PENALTY_FARE = 9
-  # nice
+  MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
   def initialize(entry_station = nil)
     @entry_station = entry_station
     @complete = false
@@ -27,9 +27,21 @@ class Journey
   # Returns the fare and sets as completed.
   def process_fare
     raise ERR_PROCESSING_COMPLETED_JOURNEY if complete?
-    raise ERR_EMPTY_JOURNEY if @entry_station.nil? && @exit_station.nil?
+    raise ERR_EMPTY_JOURNEY if empty_journey?
 
     @complete = true
-    @fare = @entry_station.nil? || @exit_station.nil? ? PENALTY_FARE : MINIMUM_FARE
+    @fare = incomplete_journey? ? PENALTY_FARE : full_journey_fare
+  end
+
+  private
+
+  def full_journey_fare
+    (entry_station.zone - exit_station.zone).abs + MINIMUM_FARE
+  end
+  def incomplete_journey?
+    @entry_station.nil? || @exit_station.nil?
+  end
+  def empty_journey?
+    @entry_station.nil? && @exit_station.nil?
   end
 end
