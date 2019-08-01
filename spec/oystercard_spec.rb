@@ -25,11 +25,19 @@ describe Oystercard do
         allow(journey_log).to receive(:current_journey). and_return(nil)
         expect(subject.in_journey?).to eq(false)
       end
+      it 'calls current_journey on journey_log' do
+        expect(journey_log).to receive(:current_journey)
+        subject.in_journey?
+      end
     end
     describe 'journeys' do
       it 'sends message :journeys to the journey_log' do
         allow(journey_log).to receive(:journeys). and_return('test_response')
         expect(subject.journeys).to eq('test_response')
+      end
+      it 'calls journeys on journey log' do
+        expect(journey_log).to receive(:journeys)
+        subject.journeys
       end
     end
 
@@ -55,17 +63,31 @@ describe Oystercard do
       expect(subject.touch_in(station)).to eq(Oystercard::MAXIMUM_BALANCE)
     end
 
+    it 'calls outstanding chard and start on entry station' do
+      expect(journey_log).to receive(:outstanding_charge)
+      expect(journey_log).to receive(:start).with(station)
+      subject.touch_in(station)
+    end
+
     context 'and touched_in' do
       before(:each) { subject.touch_in(station) }
 
       it 'deducts from balance if starting a new journey' do
         allow(journey_log).to receive(:outstanding_charge). and_return(rand_max)
+        expect(journey_log).to receive(:outstanding_charge)
+        expect(journey_log).to receive(:start)
         expect { subject.touch_in(station) }.to change { subject.balance }.by -rand_max
       end
 
       it 'deducts from balance if touching out' do
         allow(journey_log).to receive(:end). and_return(rand_max)
         expect { subject.touch_out(station) }.to change { subject.balance }.by -rand_max
+      end
+
+      it 'calls journey log to end with station' do
+        allow(journey_log).to receive(:end). and_return(rand_max)
+        expect(journey_log).to receive(:end).with(station)
+        subject.touch_out(station)
       end
     end
   end
