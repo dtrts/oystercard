@@ -42,8 +42,8 @@ describe JourneyLog do
 
     context 'and completed the journey' do
       before(:each) { subject.end(station) }
-
       it { expect(subject.journeys.count).to eq(1) }
+      it { expect(subject.journeys[0]).to be(journey) }
 
       it 'cannot alter journeys' do
         subject.journeys[0] = 'asd'

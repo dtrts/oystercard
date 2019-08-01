@@ -20,13 +20,13 @@ class JourneyLog
   def start(entry_station)
     raise ERR_JOURNEY_IN_PROGRESS unless @current_journey.nil?
 
-    @current_journey = @journey_class.new(entry_station)
+    reveal_journey(entry_station)
+    # @current_journey = @journey_class.new(entry_station)
   end
 
   def end(exit_station)
     # if no current journey have to make one and return a penalty fare
-    @current_journey = @journey_class.new(nil) if @current_journey.nil?
-    @current_journey.exit_station = exit_station
+    reveal_journey.exit_station = exit_station
 
     process_journey
   end
@@ -40,6 +40,10 @@ class JourneyLog
   end
 
   private
+
+  def reveal_journey(entry_station = nil)
+    @current_journey ||= @journey_class.new(entry_station)
+  end
 
   def process_journey
     @fare = @current_journey.process_fare
