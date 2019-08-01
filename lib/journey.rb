@@ -11,11 +11,7 @@ class Journey
     @complete = false
   end
 
-  attr_reader :entry_station, :exit_station, :complete, :fare
-
-  def complete?
-    @complete
-  end
+  attr_reader :entry_station, :exit_station, :fare, :complete
 
   def exit_station=(exit_station)
     raise ERR_PROCESSING_COMPLETED_JOURNEY if complete?
@@ -38,10 +34,16 @@ class Journey
   def full_journey_fare
     (entry_station.zone - exit_station.zone).abs + MINIMUM_FARE
   end
+
   def incomplete_journey?
     @entry_station.nil? || @exit_station.nil?
   end
+
   def empty_journey?
     @entry_station.nil? && @exit_station.nil?
+  end
+
+  def complete?
+    @complete
   end
 end
