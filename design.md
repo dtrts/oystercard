@@ -1,5 +1,7 @@
 # Oystercard
 
+Written before tackling all the steps.
+
 ## Focus Goals
 
 ***I write code that is easy to change***
@@ -102,4 +104,5 @@ Objects:
   - `.what_zone` : returns the zone of the station
 - Fare calc :
   - `fare_total(station1 ,station2)` : Check what zone the stations are in and return a fare.
+
 
